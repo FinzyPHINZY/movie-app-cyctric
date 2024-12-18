@@ -56,7 +56,7 @@ const page = () => {
   }
 
   return (
-    <div className="min-h-screen  text-white p-6">
+    <div className="min-h-screen text-white p-6">
       <div className="max-w-5xl mx-auto">
         <header className="flex justify-between items-center mb-8">
           <h1 className="text-[48px] font-semibold flex items-center  gap-2">
