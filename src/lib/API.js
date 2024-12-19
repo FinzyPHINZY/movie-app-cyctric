@@ -19,7 +19,7 @@ async function handleLogin(email, password, login) {
     console.log('Error during login:', error);
   }
 }
-f;
+
 async function fetchMovies(token) {
   try {
     const response = await axios.get(`${API_URL}/api/movies/`, {
