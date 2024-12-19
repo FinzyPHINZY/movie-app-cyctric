@@ -18,7 +18,6 @@ const page = () => {
   const router = useRouter();
 
   // Handle Form Submission
-  // Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -41,7 +40,7 @@ const page = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center h-full">
+    <div className="flex flex-col justify-center items-center h-full p-4">
       <div className="w-full max-w-md space-y-8">
         <h1 className="text-4xl font-bold text-center text-white mb-8">
           Sign in

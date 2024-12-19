@@ -1,45 +1,43 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { handleSignup } from '@/lib/API';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const page = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
-  });
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const [rememberMe, setRememberMe] = useState(false);
-
-  // Handle Input Change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  const router = useRouter();
 
   // Handle Form Submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Create a FormData object from state
-    const data = new FormData();
-    data.append('email', formData.email);
-    data.append('password', formData.password);
+    setLoading(true);
 
-    // Debug: Log FormData values
-    for (let pair of data.entries()) {
-      console.log(pair[0], pair[1]);
+    try {
+      const res = await handleSignup(email, password, name);
+      console.log('this is the response to the page', res);
+
+      if (res?.success) {
+        router.push('/movies');
+      } else {
+        console.error('Sign up failed:', res || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('Error during form submission:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col justify-center items-center h-full">
+    <div className="flex flex-col justify-center items-center h-full p-4">
       <div className="w-full max-w-md space-y-8">
         <h1 className="text-4xl font-bold text-center text-white mb-8">
           Sign up
@@ -49,8 +47,8 @@ const page = () => {
             <Input
               type="text"
               placeholder="Name"
-              value={formData.name}
-              onChange={handleChange}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="bg-[#224957] border-none text-white placeholder:text-white rounded-md px-4"
             />
           </div>
@@ -58,8 +56,8 @@ const page = () => {
             <Input
               type="email"
               placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="bg-[#224957] border-none text-white placeholder:text-white rounded-md px-4"
             />
           </div>
@@ -67,8 +65,8 @@ const page = () => {
             <Input
               type="password"
               placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="bg-[#224957] border-none text-white placeholder:text-white rounded-md px-4"
             />
           </div>

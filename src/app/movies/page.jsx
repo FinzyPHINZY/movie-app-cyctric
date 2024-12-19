@@ -5,24 +5,22 @@ import { Button } from '@/components/ui/button';
 import { fetchMovies } from '@/lib/API';
 import { useAuth } from '@/lib/AuthProvider';
 import { CirclePlus, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const page = () => {
   const { userData } = useAuth();
+  const router = useRouter();
 
   const token = userData?.token;
 
-  console.log('User Data:', userData);
-  console.log('Token:', token);
-
   const [movies, setMovies] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
     const getMovies = async () => {
       try {
-        console.log('Fetching movies with token:', token);
         const response = await fetchMovies(token);
-        console.log('Fetched Movies:', response);
         setMovies(response.data);
       } catch (error) {
         console.error('Error fetching movies:', error);
@@ -36,16 +34,26 @@ const page = () => {
     }
   }, [token]);
 
-  const [currentPage, setCurrentPage] = useState(0);
+  const handleLogout = () => {
+    router.push('/auth/login');
+  };
+
+  const handleAddMovie = () => {
+    router.push('/movies/create');
+  };
+
   const moviesPerPage = 10;
 
   if (movies.length < 1) {
     return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <h2 className="text-white font-semibold text-[48px] ">
+      <div className="flex flex-col items-center justify-center h-full p-4">
+        <h2 className="text-white font-semibold text-[32px] md:text-[48px] text-center mb-8">
           Your movie list is empty
         </h2>
-        <Button className=" bg-[#2bd17e] font-bold text-[16px]">
+        <Button
+          onClick={handleAddMovie}
+          className=" bg-[#2bd17e] font-bold text-[16px] cursor-pointer"
+        >
           Add a new movie
         </Button>
       </div>
@@ -56,16 +64,17 @@ const page = () => {
     <div className="min-h-screen text-white p-6">
       <div className="max-w-5xl mx-auto">
         <header className="flex justify-between items-center mb-8">
-          <h1 className="text-[48px] font-semibold flex items-center  gap-2">
+          <h1 className="text-[32px] md:text-[48px] font-semibold flex items-center gap-2">
             My movies
-            <CirclePlus />
+            <CirclePlus onClick={handleAddMovie} className="cursor-pointer" />
           </h1>
           <Button
             variant="ghost"
             className="font-bold text-[16px] hover:bg-[#2bd17e]"
             aria-label="Logout"
+            onClick={handleLogout}
           >
-            Logout
+            <p className="hidden md:block">Logout</p>
             <LogOut width={32} height={32} className="w-[32px] h-[32px]" />
           </Button>
         </header>
