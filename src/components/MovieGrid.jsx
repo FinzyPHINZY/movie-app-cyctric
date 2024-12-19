@@ -3,11 +3,11 @@ import Image from 'next/image';
 const MovieGrid = ({ movies }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
-      {movies.map(({ id, title, year, image }) => (
+      {movies.map(({ id, title, year, poster }) => (
         <div key={id} className="bg-[#092c39] p-2 rounded-md">
           <div className="relative aspect-[3/4] rounded-lg overflow-hidden">
             <Image
-              src={image}
+              src={poster}
               alt={title}
               fill
               className="object-cover w-full h-48 rounded-sm"
