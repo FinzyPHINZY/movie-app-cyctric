@@ -2,43 +2,40 @@
 
 import MovieGrid from '@/components/MovieGrid';
 import { Button } from '@/components/ui/button';
+import { fetchMovies } from '@/lib/API';
+import { useAuth } from '@/lib/AuthProvider';
 import { CirclePlus, LogOut } from 'lucide-react';
-import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const page = () => {
-  const [movies, setMovies] = useState([
-    {
-      id: 1,
-      title: 'Movie 1',
-      year: 2023,
-      image: '/placeholder.jpg?height=400&width=300',
-    },
-    {
-      id: 2,
-      title: 'Movie 2',
-      year: 2021,
-      image: '/placeholder.jpg?height=400&width=300',
-    },
-    {
-      id: 3,
-      title: 'Movie 3',
-      year: 2021,
-      image: '/placeholder.jpg?height=400&width=300',
-    },
-    {
-      id: 4,
-      title: 'Movie 4',
-      year: 2021,
-      image: '/placeholder.jpg?height=400&width=300',
-    },
-    {
-      id: 5,
-      title: 'Movie 5',
-      year: 2022,
-      image: '/placeholder.jpg?height=400&width=300',
-    },
-  ]);
+  const { userData } = useAuth();
+
+  const token = userData?.token;
+
+  console.log('User Data:', userData);
+  console.log('Token:', token);
+
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    const getMovies = async () => {
+      try {
+        console.log('Fetching movies with token:', token);
+        const response = await fetchMovies(token);
+        console.log('Fetched Movies:', response);
+        setMovies(response.data);
+      } catch (error) {
+        console.error('Error fetching movies:', error);
+      }
+    };
+
+    if (token) {
+      getMovies();
+    } else {
+      console.log('No token available for fetching movies');
+    }
+  }, [token]);
+
   const [currentPage, setCurrentPage] = useState(0);
   const moviesPerPage = 10;
 
@@ -56,14 +53,12 @@ const page = () => {
   }
 
   return (
-    <div className="min-h-screen  text-white p-6">
+    <div className="min-h-screen text-white p-6">
       <div className="max-w-5xl mx-auto">
         <header className="flex justify-between items-center mb-8">
           <h1 className="text-[48px] font-semibold flex items-center  gap-2">
             My movies
-            <span>
-              <CirclePlus />
-            </span>
+            <CirclePlus />
           </h1>
           <Button
             variant="ghost"

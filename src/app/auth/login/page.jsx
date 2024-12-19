@@ -3,10 +3,13 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { handleLogin } from '@/lib/API';
+import { useAuth } from '@/lib/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const page = () => {
+  const { login, userData } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -15,22 +18,26 @@ const page = () => {
   const router = useRouter();
 
   // Handle Form Submission
-  const handleSubmit = (e) => {
+  // Handle Form Submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     setLoading(true);
 
-    // Create a FormData object from state
-    const data = new FormData();
-    data.append('email', email);
-    data.append('password', password);
+    try {
+      const res = await handleLogin(email, password, login);
+      console.log('this is the response to the page', res);
 
-    console.log('data', data);
-
-    // Simulate API call
-    setTimeout(() => {
-      router.push('/movies');
+      if (res?.data.success) {
+        router.push('/movies');
+      } else {
+        console.error('Login failed:', res || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('Error during form submission:', error);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
