@@ -15,7 +15,7 @@ const page = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [title, setTitle] = useState('');
   const [publishYear, setPublishYear] = useState('');
-  const [image, setImage] = useState(null);
+  const [poster, setPoster] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleFileUpload = (file) => {
@@ -25,7 +25,13 @@ const page = () => {
   const handleCancel = () => {
     setTitle('');
     setPublishYear('');
-    setImage(null);
+    setPoster(null);
+  };
+
+  const handleImageUpload = (file) => {
+    if (file) {
+      setPoster(file);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -36,12 +42,14 @@ const page = () => {
       const formData = new FormData();
       formData.append('title', title);
       formData.append('publishYear', publishYear);
-      formData.append('poster', image);
+      formData.append('poster', poster); // Append the raw file object
 
       const response = await createMovie(token, formData);
 
       if (response.success) {
         router.push('/movies');
+      } else {
+        console.error('Error adding movie:', response);
       }
     } catch (error) {
       console.error('Error adding movie:', error);
@@ -58,7 +66,7 @@ const page = () => {
         </h2>
 
         <div className="flex flex-col md:flex-row justify-between *:w-full md:*:w-[49%] *:border-white">
-          <div
+          {/* <div
             className={`border-2 border-dashed rounded-lg aspect-square max-w-md mx-auto flex items-center justify-center ${
               isDragging
                 ? 'border-emerald-500 bg-teal-900/50'
@@ -97,6 +105,44 @@ const page = () => {
               </p>
               <Download className="text-white" />
             </label>
+          </div> */}
+          <div
+            className={`border-2 border-dashed rounded-lg aspect-square max-w-md mx-auto flex items-center justify-center relative ${
+              isDragging
+                ? 'border-emerald-500 bg-teal-900/50'
+                : 'border-teal-800 bg-[#224957]'
+            }`}
+            style={{
+              backgroundImage: poster ? `url(${poster})` : 'none',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDragging(true);
+            }}
+            onDragLeave={() => setIsDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsDragging(false);
+              const file = e.dataTransfer.files[0];
+              handleImageUpload(file); // Custom function to handle image drop
+            }}
+          >
+            {!poster && (
+              <div className="text-center p-6 flex flex-col-reverse items-center">
+                <p className="text-white my-2">
+                  Drop an image here or click to upload
+                </p>
+                <Download className="text-white" />
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              className="absolute inset-0 opacity-0 cursor-pointer"
+              onChange={(e) => handleImageUpload(e.target.files[0])} // Custom function to handle image selection
+            />
           </div>
 
           <div className="max-w-[365px] mt-8">

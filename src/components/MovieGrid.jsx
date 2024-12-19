@@ -5,7 +5,6 @@ const MovieGrid = ({ movies }) => {
   const router = useRouter();
 
   const openCard = (id) => {
-    console.log(id);
     router.push(`/movies/update?id=${id}`);
   };
 

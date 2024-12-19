@@ -67,11 +67,16 @@ const page = () => {
 
         <div className="flex flex-col md:flex-row  justify-between *:w-full md:*:w-[49%] *:border-white">
           <div
-            className={`border-2 border-dashed rounded-lg aspect-square max-w-md mx-auto flex items-center justify-center ${
+            className={`border-2 border-dashed rounded-lg aspect-square max-w-md mx-auto flex items-center justify-center relative ${
               isDragging
                 ? 'border-emerald-500 bg-teal-900/50'
                 : 'border-teal-800 bg-[#224957]'
             }`}
+            style={{
+              backgroundImage: poster ? `url(${poster})` : 'none',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
             onDragOver={(e) => {
               e.preventDefault();
               setIsDragging(true);
@@ -80,16 +85,24 @@ const page = () => {
             onDrop={(e) => {
               e.preventDefault();
               setIsDragging(false);
+              const file = e.dataTransfer.files[0];
+              setPoster(file); // Custom function to handle image drop
             }}
           >
-            <div className="text-center p-6 flex flex-col-reverse items-center">
-              {' '}
-              {poster && (
-                <Image src={poster} width={50} height={50} alt="movie-banner" />
-              )}
-              <p className="text-white my-2">Drop an image here</p>
-              <Download className="text-white" />
-            </div>
+            {!poster && (
+              <div className="text-center p-6 flex flex-col-reverse items-center">
+                <p className="text-white my-2">
+                  Drop an image here or click to upload
+                </p>
+                <Download className="text-white" />
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              className="absolute inset-0 opacity-0 cursor-pointer"
+              onChange={(e) => setPoster(e.target.files[0])} // Custom function to handle image selection
+            />
           </div>
 
           <div className="max-w-[365px] mt-8">
