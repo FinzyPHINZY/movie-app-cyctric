@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
         className={`${montserrat.className} h-screen bg-[#093545] antialiased flex flex-col items-center relative`}
       >
         <AuthProvider>
-          <main className="flex flex-col h-full z-20 w-full">{children}</main>
+          <main className="flex flex-col h-full w-full">{children}</main>
         </AuthProvider>
       </body>
     </html>
