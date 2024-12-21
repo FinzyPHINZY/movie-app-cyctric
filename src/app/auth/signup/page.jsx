@@ -3,10 +3,13 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { handleSignup } from '@/lib/API';
+import { useAuth } from '@/lib/AuthProvider';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const page = () => {
+  const { login } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,7 +24,7 @@ const page = () => {
     setLoading(true);
 
     try {
-      const res = await handleSignup(email, password, name);
+      const res = await handleSignup(email, password, name, login);
       console.log('this is the response to the page', res);
 
       if (res?.success) {
@@ -76,6 +79,12 @@ const page = () => {
           </Button>
         </form>
       </div>
+      <p className="my-4 text-gray-400">
+        Already a user?{' '}
+        <Link href={'/auth/login'} className="underline">
+          Sign in
+        </Link>
+      </p>
     </div>
   );
 };

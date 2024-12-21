@@ -20,7 +20,7 @@ async function handleLogin(email, password, login) {
   }
 }
 
-async function handleSignup(email, password, name) {
+async function handleSignup(email, password, name, login) {
   try {
     console.log('attempting signup...');
     console.log(
@@ -34,6 +34,7 @@ async function handleSignup(email, password, name) {
     });
 
     if (response.data.success) {
+      await login(response.data);
       return response.data;
     } else {
       console.log('Sign up failed');

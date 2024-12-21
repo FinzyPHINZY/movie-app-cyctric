@@ -5,6 +5,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { handleLogin } from '@/lib/API';
 import { useAuth } from '@/lib/AuthProvider';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -84,6 +85,12 @@ const page = () => {
           </Button>
         </form>
       </div>
+      <p className="my-4 text-gray-400">
+        New here?{' '}
+        <Link href={'/auth/signup'} className="underline">
+          Sign up
+        </Link>
+      </p>
     </div>
   );
 };
